@@ -7,12 +7,13 @@
 <title>FD & RD Manager</title>
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 <style>
-  :root {
+  :root{
     --bg:#0b1622;--surf:#152032;--surf2:#1c2d42;--surf3:#243550;
     --gold:#f5a623;--goldL:#ffc85c;--goldD:rgba(245,166,35,.15);
     --green:#2ecc71;--greenD:rgba(46,204,113,.12);
     --blue:#3b8ef3;--blueD:rgba(59,142,243,.13);
     --red:#e74c3c;--redD:rgba(231,76,60,.13);
+    --purple:#9b59b6;--purpleD:rgba(155,89,182,.15);
     --orange:#e67e22;--orangeD:rgba(230,126,34,.14);
     --txt:#e8edf3;--txt2:#8fa3bb;--txt3:#4d6478;
     --bdr:rgba(255,255,255,.07);--r:14px;--rs:9px;
@@ -33,7 +34,6 @@
   .drive-chip{display:flex;align-items:center;gap:5px;background:rgba(66,133,244,.1);
     border:1px solid rgba(66,133,244,.25);border-radius:6px;padding:4px 9px;
     font-size:10px;font-weight:700;color:#7baef8;cursor:pointer}
-  .drive-chip svg{flex-shrink:0}
 
   /* ── STATUS BAR ── */
   .status-bar{display:flex;align-items:center;background:var(--surf2);border-radius:10px;
@@ -48,7 +48,7 @@
   @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
   .pulsing{animation:pulse 1.1s ease-in-out infinite}
 
-  /* ── SETUP SCREEN ── */
+  /* ── SETUP ── */
   #setup-screen{display:none;padding:20px 20px 32px;text-align:center}
   #setup-screen.show{display:block}
   .setup-icon{font-size:52px;margin-bottom:14px}
@@ -82,8 +82,11 @@
   /* ── SECTION HEADER ── */
   .sec-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
   .sec-title{font-size:12px;font-weight:700;color:var(--txt2);letter-spacing:.8px;text-transform:uppercase}
+  .hdr-btns{display:flex;gap:7px}
   .add-btn{background:var(--gold);color:#0b1622;border:none;border-radius:20px;
-    padding:7px 14px;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:4px}
+    padding:7px 13px;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:4px}
+  .bulk-btn{background:var(--blueD);color:var(--blue);border:1px solid rgba(59,142,243,.3);border-radius:20px;
+    padding:7px 12px;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:4px}
 
   /* ── SUMMARY CARDS ── */
   .grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px}
@@ -101,13 +104,23 @@
 
   /* ── ENTRY CARDS ── */
   .entry{background:var(--surf);border-radius:var(--r);border:1px solid var(--bdr);overflow:hidden;margin-bottom:10px}
+  .entry.matured{border-color:rgba(155,89,182,.25);opacity:.8}
   .entry-hdr{display:flex;align-items:flex-start;justify-content:space-between;padding:12px 12px 8px}
   .type-badge{font-size:8px;font-weight:800;letter-spacing:.5px;padding:3px 6px;border-radius:4px;
     margin-bottom:5px;display:inline-block}
+  .matured-badge{font-size:8px;font-weight:800;letter-spacing:.5px;padding:3px 6px;border-radius:4px;
+    margin-bottom:5px;display:inline-block;background:var(--purpleD);color:var(--purple);margin-left:6px}
   .e-bank{font-size:15px;font-weight:800;line-height:1}
   .e-meta{font-size:10px;color:var(--txt2);margin-top:3px}
+  .entry-actions{display:flex;gap:6px;flex-shrink:0}
   .del-btn{background:var(--redD);border:none;width:28px;height:28px;border-radius:8px;
-    display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0}
+    display:flex;align-items:center;justify-content:center;cursor:pointer}
+  .mat-btn{background:var(--purpleD);border:none;height:28px;border-radius:8px;
+    display:flex;align-items:center;justify-content:center;cursor:pointer;
+    padding:0 8px;font-size:9px;font-weight:700;color:var(--purple);white-space:nowrap}
+  .reopen-btn{background:var(--greenD);border:none;height:28px;border-radius:8px;
+    display:flex;align-items:center;justify-content:center;cursor:pointer;
+    padding:0 8px;font-size:9px;font-weight:700;color:var(--green);white-space:nowrap}
   .divider{height:1px;background:var(--bdr);margin:0 12px}
   .e-grid{display:grid;grid-template-columns:repeat(3,1fr);padding:8px 12px 10px;gap:4px 0}
   .eg-lbl{font-size:9px;color:var(--txt2);font-weight:600;letter-spacing:.3px;margin-bottom:2px;text-transform:uppercase}
@@ -119,6 +132,14 @@
   .pbar{height:3px;background:var(--surf3);border-radius:2px;overflow:hidden}
   .pfill{height:100%;border-radius:2px}
   .e-foot{background:var(--greenD);padding:9px 12px;display:flex;justify-content:space-between;align-items:center}
+  .e-foot.matured-foot{background:var(--purpleD)}
+
+  /* ── MATURED SECTION HEADER ── */
+  .matured-section-hdr{display:flex;align-items:center;gap:8px;margin:20px 0 10px;cursor:pointer}
+  .matured-section-title{font-size:11px;font-weight:700;color:var(--purple);letter-spacing:.8px;text-transform:uppercase}
+  .matured-count{background:var(--purpleD);color:var(--purple);font-size:10px;font-weight:800;
+    padding:2px 8px;border-radius:10px}
+  .chevron{color:var(--purple);transition:transform .2s;font-size:12px}
 
   /* ── EMPTY STATE ── */
   .empty{text-align:center;padding:40px 20px}
@@ -137,7 +158,7 @@
   .nav-lbl{font-size:10px;font-weight:600;letter-spacing:.3px}
 
   /* ── MODAL ── */
-  .modal{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:200;
+  .modal{position:fixed;inset:0;background:rgba(0,0,0,.77);z-index:200;
     display:none;align-items:flex-end;backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px)}
   .modal.open{display:flex}
   .modal-sheet{background:var(--surf);width:100%;max-width:480px;margin:0 auto;
@@ -163,6 +184,28 @@
   .sub-btn{margin:14px 20px 0;background:var(--gold);color:#0b1622;border:none;border-radius:var(--rs);
     padding:14px;font-size:14px;font-weight:800;cursor:pointer;width:calc(100% - 40px);display:block}
 
+  /* ── BULK UPLOAD ── */
+  .bulk-info{background:var(--surf2);border-radius:var(--rs);padding:12px 14px;margin:0 20px;border:1px solid var(--bdr)}
+  .bulk-info p{font-size:12px;color:var(--txt2);line-height:1.6}
+  .bulk-info code{background:var(--surf3);padding:1px 5px;border-radius:4px;font-size:11px;color:var(--txt)}
+  .dl-btn{background:var(--blueD);color:var(--blue);border:1px solid rgba(59,142,243,.3);
+    border-radius:var(--rs);padding:10px 14px;font-size:12px;font-weight:700;cursor:pointer;
+    width:calc(100% - 40px);margin:10px 20px 0;display:block;text-align:center}
+  .upload-zone{margin:10px 20px 0;border:2px dashed rgba(59,142,243,.3);border-radius:var(--rs);
+    padding:20px;text-align:center;cursor:pointer;transition:border-color .2s}
+  .upload-zone:hover{border-color:var(--blue)}
+  .upload-zone input{display:none}
+  .upload-zone-txt{font-size:13px;color:var(--txt2);margin-top:6px}
+  .upload-zone-ico{font-size:28px}
+  .bulk-preview{margin:10px 20px 0;background:var(--greenD);border:1px solid rgba(46,204,113,.2);
+    border-radius:var(--rs);padding:12px 14px;display:none}
+  .bulk-preview-title{font-size:12px;font-weight:700;color:var(--green);margin-bottom:6px}
+  .bulk-preview-row{font-size:11px;color:var(--txt2);margin-bottom:3px}
+  .bulk-err{margin:10px 20px 0;background:var(--redD);border:1px solid rgba(231,76,60,.2);
+    border-radius:var(--rs);padding:12px 14px;display:none}
+  .bulk-err-title{font-size:12px;font-weight:700;color:var(--red);margin-bottom:4px}
+  .bulk-err-row{font-size:11px;color:var(--txt2);margin-bottom:2px}
+
   /* ── TOAST ── */
   .toast{position:fixed;bottom:84px;left:50%;transform:translateX(-50%);padding:9px 18px;
     border-radius:20px;font-size:12px;font-weight:600;z-index:300;white-space:nowrap;
@@ -172,6 +215,12 @@
   ::-webkit-scrollbar{width:0}
   input[type="date"]::-webkit-calendar-picker-indicator{filter:invert(.6)}
   select option{background:#1c2d42}
+
+  /* Tab switcher inside modal */
+  .tab-bar{display:flex;background:var(--surf2);border-radius:10px;margin:14px 20px 0;padding:3px;gap:3px}
+  .tab{flex:1;padding:9px;border:none;border-radius:8px;font-size:12px;font-weight:700;
+    cursor:pointer;background:transparent;color:var(--txt2);transition:all .2s;font-family:inherit}
+  .tab.on{background:var(--gold);color:#0b1622}
 </style>
 </head>
 <body>
@@ -197,7 +246,7 @@
     <div class="st-dot" id="st-dot"></div>
     <div class="st-info">
       <div class="st-title" id="st-title">Ready</div>
-      <div class="st-sub"  id="st-sub">Idle</div>
+      <div class="st-sub"   id="st-sub">Idle</div>
     </div>
     <button class="st-btn" id="st-btn" onclick="syncFromDrive()">Sync</button>
   </div>
@@ -207,43 +256,23 @@
 <div id="setup-screen">
   <div class="setup-icon">🔐</div>
   <div class="setup-h">Connect Google Drive</div>
-  <div class="setup-p">Your FD & RD data will be stored as <strong style="color:var(--gold)">fdrd_data.json</strong> in your Google Drive. Works on iOS, Android, and Desktop.</div>
-
+  <div class="setup-p">Your FD & RD data will be stored as <strong style="color:var(--gold)">fdrd_data.json</strong> in your Google Drive. Works on iOS, Android &amp; Desktop.</div>
   <div class="steps">
-    <div class="step">
-      <div class="step-n">1</div>
-      <div class="step-t">Go to <a href="https://console.cloud.google.com" target="_blank">console.cloud.google.com</a> → Create a project (or select one)</div>
-    </div>
-    <div class="step">
-      <div class="step-n">2</div>
-      <div class="step-t">Enable <strong>Google Drive API</strong>: APIs &amp; Services → Library → search "Drive API" → Enable</div>
-    </div>
-    <div class="step">
-      <div class="step-n">3</div>
-      <div class="step-t">APIs &amp; Services → Credentials → Create → <strong>OAuth 2.0 Client ID</strong> → Web application</div>
-    </div>
-    <div class="step">
-      <div class="step-n">4</div>
-      <div class="step-t">Under <strong>Authorised JavaScript origins</strong>, add the URL where this file is hosted (or <code>http://localhost</code> for local testing)</div>
-    </div>
-    <div class="step">
-      <div class="step-n">5</div>
-      <div class="step-t">Copy the <strong>Client ID</strong> and paste it below</div>
-    </div>
+    <div class="step"><div class="step-n">1</div><div class="step-t">Go to <a href="https://console.cloud.google.com" target="_blank">console.cloud.google.com</a> → Create a project</div></div>
+    <div class="step"><div class="step-n">2</div><div class="step-t">Enable <strong>Google Drive API</strong>: APIs &amp; Services → Library → search "Drive API" → Enable</div></div>
+    <div class="step"><div class="step-n">3</div><div class="step-t">APIs &amp; Services → Credentials → Create → <strong>OAuth 2.0 Client ID</strong> → Web application</div></div>
+    <div class="step"><div class="step-n">4</div><div class="step-t">Under <strong>Authorised JavaScript origins</strong> add only your domain e.g. <code>https://yourname.github.io</code> (no path, no trailing slash)</div></div>
+    <div class="step"><div class="step-n">5</div><div class="step-t">OAuth consent screen → Test users → add your Gmail address</div></div>
+    <div class="step"><div class="step-n">6</div><div class="step-t">Copy the <strong>Client ID</strong> and paste below</div></div>
   </div>
-
   <div class="setup-input-wrap">
     <label class="setup-label">Google OAuth Client ID</label>
     <input class="setup-input" id="client-id-input" type="text"
       placeholder="xxxxxxxxxx-xxxxxx.apps.googleusercontent.com"
       autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false">
   </div>
-
-  <button class="big-btn" onclick="saveClientIdAndAuth()">🔗 Connect & Sign In with Google</button>
-
-  <div class="warn-box">
-    ℹ️ <strong>iOS note:</strong> The sign-in popup requires Safari on iOS. If blocked, go to Settings → Safari → allow popups for this site. Your Client ID is stored locally and never leaves your device.
-  </div>
+  <button class="big-btn" onclick="saveClientIdAndAuth()">🔗 Connect &amp; Sign In with Google</button>
+  <div class="warn-box">ℹ️ <strong>iOS:</strong> If the sign-in popup is blocked, go to Settings → Safari → allow popups. Your Client ID is stored locally and never leaves your device.</div>
 </div>
 
 <!-- PAGES -->
@@ -256,9 +285,15 @@
 <div class="page" id="page-fd">
   <div class="sec-hdr">
     <span class="sec-title">Fixed Deposits</span>
-    <button class="add-btn" onclick="openModal('fd')">
-      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5"><path d="M12 5v14M5 12h14"/></svg>Add FD
-    </button>
+    <div class="hdr-btns">
+      <button class="bulk-btn" onclick="openBulk('fd')">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        Bulk
+      </button>
+      <button class="add-btn" onclick="openModal('fd')">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5"><path d="M12 5v14M5 12h14"/></svg>Add FD
+      </button>
+    </div>
   </div>
   <div id="fd-list"></div>
 </div>
@@ -266,9 +301,15 @@
 <div class="page" id="page-rd">
   <div class="sec-hdr">
     <span class="sec-title">Recurring Deposits</span>
-    <button class="add-btn" onclick="openModal('rd')">
-      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5"><path d="M12 5v14M5 12h14"/></svg>Add RD
-    </button>
+    <div class="hdr-btns">
+      <button class="bulk-btn" onclick="openBulk('rd')">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        Bulk
+      </button>
+      <button class="add-btn" onclick="openModal('rd')">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5"><path d="M12 5v14M5 12h14"/></svg>Add RD
+      </button>
+    </div>
   </div>
   <div id="rd-list"></div>
 </div>
@@ -294,7 +335,7 @@
   </button>
 </nav>
 
-<!-- MODAL -->
+<!-- SINGLE ADD / EDIT MODAL -->
 <div class="modal" id="modal" onclick="closeModalOutside(event)">
   <div class="modal-sheet">
     <div class="m-handle"></div>
@@ -302,7 +343,9 @@
     <div id="mfd">
       <div class="m-head"><div class="m-title">Add Fixed Deposit</div><div class="m-sub">Auto-calculated · saved to Google Drive</div></div>
       <div class="form-body">
-        <div class="fg full"><label class="flbl">Bank / Institution</label><input class="finput" id="fd-bank" placeholder="e.g. SBI, HDFC, Post Office" oninput="calcFD()"></div>
+        <div class="fg full"><label class="flbl">Bank / Institution</label>
+          <select class="fsel" id="fd-bank"><option value="">Select Bank...</option></select>
+        </div>
         <div class="fg full"><label class="flbl">A/C or Reference No.</label><input class="finput" id="fd-accno" placeholder="Optional"></div>
         <div class="frow">
           <div class="fg"><label class="flbl">Principal (₹)</label><input class="finput" id="fd-p" type="number" placeholder="50000" oninput="calcFD()"></div>
@@ -335,7 +378,9 @@
     <div id="mrd" style="display:none">
       <div class="m-head"><div class="m-title">Add Recurring Deposit</div><div class="m-sub">Auto-calculated · saved to Google Drive</div></div>
       <div class="form-body">
-        <div class="fg full"><label class="flbl">Bank / Institution</label><input class="finput" id="rd-bank" placeholder="e.g. SBI, Axis, Post Office" oninput="calcRD()"></div>
+        <div class="fg full"><label class="flbl">Bank / Institution</label>
+          <select class="fsel" id="rd-bank"><option value="">Select Bank...</option></select>
+        </div>
         <div class="fg full"><label class="flbl">A/C or Reference No.</label><input class="finput" id="rd-accno" placeholder="Optional"></div>
         <div class="frow">
           <div class="fg"><label class="flbl">Monthly Amount (₹)</label><input class="finput" id="rd-m" type="number" placeholder="5000" oninput="calcRD()"></div>
@@ -345,7 +390,7 @@
           <div class="fg"><label class="flbl">Tenure (months)</label><input class="finput" id="rd-t" type="number" placeholder="24" oninput="calcRD()"></div>
           <div class="fg"><label class="flbl">Start Date</label><input class="finput" id="rd-s" type="date" oninput="calcRD()"></div>
         </div>
-        <div class="fg full"><label class="flbl">Notes</label><input class="finput" id="rd-notes" placeholder="e.g. Emergency fund, holiday goal"></div>
+        <div class="fg full" style="padding:0 0"><label class="flbl">Notes</label><input class="finput" id="rd-notes" placeholder="e.g. Emergency fund, holiday goal"></div>
       </div>
       <div class="calc-prev" id="rd-prev" style="display:none">
         <div><div style="font-size:10px;color:var(--txt2);font-weight:600">Est. Maturity</div><div style="font-size:10px;color:var(--txt2);margin-top:2px" id="rd-pd">—</div></div>
@@ -356,26 +401,105 @@
   </div>
 </div>
 
+<!-- BULK UPLOAD MODAL -->
+<div class="modal" id="bulk-modal" onclick="closeBulkOutside(event)">
+  <div class="modal-sheet" id="bulk-sheet">
+    <div class="m-handle"></div>
+    <div class="m-head">
+      <div class="m-title" id="bulk-title">Bulk Upload FDs</div>
+      <div class="m-sub">Upload a CSV file — all rows added to Drive</div>
+    </div>
+
+    <div class="bulk-info" style="margin:14px 20px 0">
+      <p>CSV columns (in order):<br>
+      <strong id="bulk-cols-hint"></strong><br><br>
+      Download the sample CSV below — it has the correct headers and valid bank names pre-filled. Fill your data and upload.</p>
+    </div>
+
+    <button class="dl-btn" onclick="downloadSampleCSV()">⬇️ Download Sample CSV</button>
+
+    <div class="upload-zone" id="upload-zone" onclick="G('csv-file').click()">
+      <input type="file" id="csv-file" accept=".csv,text/csv" onchange="handleCSV(event)">
+      <div class="upload-zone-ico">📄</div>
+      <div class="upload-zone-txt">Tap to select CSV file</div>
+    </div>
+
+    <div class="bulk-preview" id="bulk-preview">
+      <div class="bulk-preview-title" id="bulk-prev-title"></div>
+      <div id="bulk-prev-rows"></div>
+    </div>
+    <div class="bulk-err" id="bulk-err">
+      <div class="bulk-err-title">⚠️ Errors found — fix and re-upload</div>
+      <div id="bulk-err-rows"></div>
+    </div>
+
+    <button class="sub-btn" id="bulk-submit-btn" style="display:none" onclick="submitBulk()">💾 Import All to Google Drive</button>
+  </div>
+</div>
+
 <!-- TOAST -->
 <div class="toast" id="toast"></div>
 
 <script>
 // ═══════════════════════════════════════════════════════════════
-//  CONFIG & STATE
+//  CONSTANTS
 // ═══════════════════════════════════════════════════════════════
-const SCOPE     = 'https://www.googleapis.com/auth/drive.appdata https://www.googleapis.com/auth/drive.file';
-const CACHE_KEY = 'fdrd_data_v3';
-const CID_KEY   = 'fdrd_client_id';
-const FID_KEY   = 'fdrd_file_id';
-const DRIVE_API = 'https://www.googleapis.com/drive/v3/files';
-const UPLOAD_API= 'https://www.googleapis.com/upload/drive/v3/files';
-const FILENAME  = 'fdrd_data.json';
+const SCOPE      = 'https://www.googleapis.com/auth/drive.file';
+const CACHE_KEY  = 'fdrd_data_v4';
+const CID_KEY    = 'fdrd_client_id';
+const FID_KEY    = 'fdrd_file_id';
+const DRIVE_API  = 'https://www.googleapis.com/drive/v3/files';
+const UPLOAD_API = 'https://www.googleapis.com/upload/drive/v3/files';
+const FILENAME   = 'fdrd_data.json';
 
+// ── Indian Government Banks ──────────────────────────────────
+const BANKS = [
+  "State Bank of India (SBI)",
+  "Bank of Baroda",
+  "Bank of India",
+  "Bank of Maharashtra",
+  "Canara Bank",
+  "Central Bank of India",
+  "Indian Bank",
+  "Indian Overseas Bank",
+  "Punjab & Sind Bank",
+  "Punjab National Bank (PNB)",
+  "UCO Bank",
+  "Union Bank of India",
+  "India Post (Post Office)",
+  // Major private & co-op for convenience
+  "HDFC Bank",
+  "ICICI Bank",
+  "Axis Bank",
+  "Kotak Mahindra Bank",
+  "IDBI Bank",
+  "Yes Bank",
+  "Other"
+];
+
+// ── CSV column definitions ───────────────────────────────────
+const FD_COLS = ['Bank','AccountNo','Principal','RatePercent','Tenure','TenureUnit','StartDate','InterestType','Notes'];
+const RD_COLS = ['Bank','AccountNo','MonthlyAmount','RatePercent','TenureMonths','StartDate','Notes'];
+
+const FD_SAMPLE_ROW = [
+  'State Bank of India (SBI)', 'SBI12345', '100000', '7.25', '12', 'months', '2024-01-15', 'cq', 'Auto-renew'
+];
+const RD_SAMPLE_ROW = [
+  'Canara Bank', 'CAN98765', '5000', '6.50', '24', '2024-03-01', 'Monthly SIP goal'
+];
+
+// Interest type codes: cq=Compound Quarterly, cm=Compound Monthly, cy=Compound Yearly, si=Simple Interest
+
+// ═══════════════════════════════════════════════════════════════
+//  STATE
+// ═══════════════════════════════════════════════════════════════
 let appData     = { fds:[], rds:[] };
 let accessToken = null;
 let tokenClient = null;
 let driveFileId = localStorage.getItem(FID_KEY) || null;
 let clientId    = localStorage.getItem(CID_KEY) || '';
+let bulkType    = 'fd';
+let bulkParsed  = [];
 
 // ═══════════════════════════════════════════════════════════════
 //  INIT
@@ -383,33 +507,36 @@ let clientId    = localStorage.getItem(CID_KEY) || '';
 window.addEventListener('load', () => {
   document.getElementById('topbar-date').textContent =
     new Date().toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'short'});
-
-  // Load cache immediately
+  populateBankDropdowns();
   const cached = readCache();
-  if (cached) { appData = cached; }
-
+  if (cached) appData = cached;
   if (clientId) {
-    // Already configured — init OAuth and try silent sign-in
-    initGoogleAuth(clientId, () => {
-      requestToken(true); // silent / prompt-less
-    });
+    initGoogleAuth(clientId, () => requestToken(true));
   } else {
     showSetup();
   }
 });
 
+function populateBankDropdowns() {
+  ['fd-bank','rd-bank'].forEach(id => {
+    const sel = G(id);
+    BANKS.forEach(b => {
+      const o = document.createElement('option');
+      o.value = b; o.textContent = b;
+      sel.appendChild(o);
+    });
+  });
+}
+
 // ═══════════════════════════════════════════════════════════════
 //  GOOGLE OAUTH
 // ═══════════════════════════════════════════════════════════════
 function initGoogleAuth(cid, onReady) {
-  // Wait for GIS library to load
   const check = setInterval(() => {
     if (window.google && google.accounts && google.accounts.oauth2) {
       clearInterval(check);
       tokenClient = google.accounts.oauth2.initTokenClient({
-        client_id: cid,
-        scope: SCOPE,
-        callback: onTokenResponse,
+        client_id: cid, scope: SCOPE, callback: onTokenResponse,
       });
       if (onReady) onReady();
     }
@@ -417,290 +544,359 @@ function initGoogleAuth(cid, onReady) {
 }
 
 function onTokenResponse(resp) {
-  if (resp.error) {
-    setStatus('error', '⚠️ Auth Failed', resp.error);
-    showToast('Sign-in failed: ' + resp.error, 'error');
-    return;
-  }
+  if (resp.error) { setStatus('error','⚠️ Auth Failed',resp.error); showToast('Sign-in failed: '+resp.error,'error'); return; }
   accessToken = resp.access_token;
-  showApp();
-  syncFromDrive();
+  showApp(); syncFromDrive();
 }
-
-function requestToken(silent = false) {
+function requestToken(silent=false) {
   if (!tokenClient) return;
-  if (silent) {
-    tokenClient.requestAccessToken({ prompt: '' });
-  } else {
-    tokenClient.requestAccessToken({ prompt: 'consent' });
-  }
+  tokenClient.requestAccessToken({ prompt: silent ? '' : 'consent' });
 }
-
 function saveClientIdAndAuth() {
-  const cid = document.getElementById('client-id-input').value.trim();
-  if (!cid || !cid.includes('.apps.googleusercontent.com')) {
-    showToast('Please enter a valid Client ID', 'error'); return;
-  }
-  localStorage.setItem(CID_KEY, cid);
-  clientId = cid;
+  const cid = G('client-id-input').value.trim();
+  if (!cid || !cid.includes('.apps.googleusercontent.com')) { showToast('Please enter a valid Client ID','error'); return; }
+  localStorage.setItem(CID_KEY, cid); clientId = cid;
   initGoogleAuth(cid, () => requestToken(false));
 }
 
 // ═══════════════════════════════════════════════════════════════
-//  DRIVE API CALLS
+//  DRIVE API
 // ═══════════════════════════════════════════════════════════════
-async function driveRequest(url, opts = {}) {
+async function driveRequest(url, opts={}) {
   if (!accessToken) throw new Error('Not authenticated');
-  const headers = { 'Authorization': 'Bearer ' + accessToken, ...(opts.headers || {}) };
+  const headers = { 'Authorization':'Bearer '+accessToken, ...(opts.headers||{}) };
   const res = await fetch(url, { ...opts, headers });
-  if (res.status === 401) {
-    // Token expired — request new one silently
-    requestToken(true);
-    throw new Error('Token expired — refreshing');
-  }
-  if (!res.ok) {
-    const err = await res.json().catch(()=>({}));
-    throw new Error(err.error?.message || `HTTP ${res.status}`);
-  }
-  const ct = res.headers.get('Content-Type') || '';
-  if (ct.includes('application/json')) return res.json();
-  return res.text();
+  if (res.status===401) { requestToken(true); throw new Error('Token expired'); }
+  if (!res.ok) { const e=await res.json().catch(()=>({})); throw new Error(e.error?.message||`HTTP ${res.status}`); }
+  const ct = res.headers.get('Content-Type')||'';
+  return ct.includes('application/json') ? res.json() : res.text();
 }
 
 async function findFile() {
-  // First try cached file ID
   if (driveFileId) {
-    try {
-      await driveRequest(`${DRIVE_API}/${driveFileId}?fields=id,name`);
-      return driveFileId;
-    } catch(e) {
-      driveFileId = null; localStorage.removeItem(FID_KEY);
-    }
+    try { await driveRequest(`${DRIVE_API}/${driveFileId}?fields=id`); return driveFileId; }
+    catch(e) { driveFileId=null; localStorage.removeItem(FID_KEY); }
   }
-  // Search by name
   const q = encodeURIComponent(`name='${FILENAME}' and trashed=false`);
-  const res = await driveRequest(`${DRIVE_API}?q=${q}&fields=files(id,name)&pageSize=1`);
-  if (res.files && res.files.length > 0) {
-    driveFileId = res.files[0].id;
-    localStorage.setItem(FID_KEY, driveFileId);
-    return driveFileId;
-  }
+  const res = await driveRequest(`${DRIVE_API}?q=${q}&fields=files(id)&pageSize=1`);
+  if (res.files?.length) { driveFileId=res.files[0].id; localStorage.setItem(FID_KEY,driveFileId); return driveFileId; }
   return null;
 }
 
-async function readDriveFile(fileId) {
-  const text = await driveRequest(`${DRIVE_API}/${fileId}?alt=media`);
-  if (!text || !text.trim()) return { fds:[], rds:[] };
-  return JSON.parse(text);
+async function readDriveFile(fid) {
+  const t = await driveRequest(`${DRIVE_API}/${fid}?alt=media`);
+  if (!t||!t.trim()) return { fds:[], rds:[] };
+  return JSON.parse(t);
 }
 
 async function createDriveFile(data) {
-  const content = JSON.stringify(data, null, 2);
-  const meta    = JSON.stringify({ name: FILENAME, mimeType: 'application/json' });
-  const boundary= '-------fdrd_boundary';
-  const body    = `--${boundary}\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n${meta}\r\n--${boundary}\r\nContent-Type: application/json\r\n\r\n${content}\r\n--${boundary}--`;
-  const res = await driveRequest(`${UPLOAD_API}?uploadType=multipart&fields=id`, {
-    method: 'POST',
-    headers: { 'Content-Type': `multipart/related; boundary=${boundary}` },
-    body
+  const content=JSON.stringify(data,null,2);
+  const meta=JSON.stringify({name:FILENAME,mimeType:'application/json'});
+  const b='-------fdrd_b';
+  const body=`--${b}\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n${meta}\r\n--${b}\r\nContent-Type: application/json\r\n\r\n${content}\r\n--${b}--`;
+  const res=await driveRequest(`${UPLOAD_API}?uploadType=multipart&fields=id`,{
+    method:'POST', headers:{'Content-Type':`multipart/related; boundary=${b}`}, body
   });
-  driveFileId = res.id;
-  localStorage.setItem(FID_KEY, driveFileId);
-  return driveFileId;
+  driveFileId=res.id; localStorage.setItem(FID_KEY,driveFileId); return driveFileId;
 }
 
-async function updateDriveFile(fileId, data) {
-  const content = JSON.stringify(data, null, 2);
-  await driveRequest(`${UPLOAD_API}/${fileId}?uploadType=media`, {
-    method: 'PATCH',
-    headers: { 'Content-Type': 'application/json' },
-    body: content
+async function updateDriveFile(fid, data) {
+  await driveRequest(`${UPLOAD_API}/${fid}?uploadType=media`,{
+    method:'PATCH', headers:{'Content-Type':'application/json'}, body:JSON.stringify(data,null,2)
   });
 }
 
 async function syncFromDrive() {
-  setStatus('loading', '☁️ Syncing from Drive...', 'Reading ' + FILENAME);
-  document.getElementById('st-btn').disabled = true;
+  setStatus('loading','☁️ Syncing from Drive...','Reading '+FILENAME);
+  G('st-btn').disabled=true;
   try {
     const fid = await findFile();
     if (fid) {
-      const d = await readDriveFile(fid);
-      appData = d; writeCache(d); renderAll();
-      setStatus('synced', '✓ Synced with Google Drive', `${d.fds.length} FDs · ${d.rds.length} RDs`);
-      showToast('✓ Synced from Google Drive', 'success');
+      const d=await readDriveFile(fid); appData=d; writeCache(d); renderAll();
+      const active=d.fds.filter(f=>f.status!=='matured').length + d.rds.filter(r=>r.status!=='matured').length;
+      setStatus('synced','✓ Synced with Google Drive',`${active} active · ${d.fds.length+d.rds.length} total`);
+      showToast('✓ Synced from Google Drive','success');
     } else {
-      setStatus('synced', '✓ Connected · No file yet', 'Will create on first save');
-      showToast('No file yet — add your first FD or RD', 'info');
+      setStatus('synced','✓ Connected · No file yet','Will create on first save');
+      showToast('No file yet — add your first FD or RD','info');
     }
   } catch(e) {
-    setStatus('error', '⚠️ Sync Failed', e.message);
-    showToast('Sync error: ' + e.message, 'error');
-    renderAll(); // still show cached data
-  } finally {
-    document.getElementById('st-btn').disabled = false;
-  }
+    setStatus('error','⚠️ Sync Failed',e.message);
+    showToast('Sync error: '+e.message,'error'); renderAll();
+  } finally { G('st-btn').disabled=false; }
 }
 
 async function saveToDrive() {
-  setStatus('saving', '💾 Saving to Drive...', 'Writing ' + FILENAME);
+  setStatus('saving','💾 Saving to Drive...','Writing '+FILENAME);
   try {
-    const fid = await findFile();
-    if (fid) { await updateDriveFile(fid, appData); }
-    else      { await createDriveFile(appData); }
+    const fid=await findFile();
+    if (fid) await updateDriveFile(fid,appData);
+    else     await createDriveFile(appData);
     writeCache(appData);
-    setStatus('synced', '✓ Saved to Google Drive', `${appData.fds.length} FDs · ${appData.rds.length} RDs`);
+    const active=appData.fds.filter(f=>f.status!=='matured').length + appData.rds.filter(r=>r.status!=='matured').length;
+    setStatus('synced','✓ Saved to Google Drive',`${active} active · ${appData.fds.length+appData.rds.length} total`);
   } catch(e) {
-    setStatus('error', '⚠️ Save Failed', e.message);
-    showToast('Save failed: ' + e.message, 'error');
+    setStatus('error','⚠️ Save Failed',e.message);
+    showToast('Save failed: '+e.message,'error');
   }
 }
 
 // ═══════════════════════════════════════════════════════════════
-//  STATUS BAR
+//  STATUS / CACHE / UI
 // ═══════════════════════════════════════════════════════════════
-function setStatus(type, title, sub) {
-  const dot = document.getElementById('st-dot');
-  const colors = { loading:'#3b8ef3', saving:'#3b8ef3', synced:'#2ecc71', error:'#e74c3c' };
-  dot.style.background   = colors[type] || '#f5a623';
-  dot.style.boxShadow    = (type==='synced')? '0 0 7px #2ecc71' : (type==='loading'||type==='saving')? `0 0 7px ${colors[type]}` : 'none';
-  dot.className = 'st-dot' + (type==='loading'||type==='saving'?' pulsing':'');
-  document.getElementById('st-title').textContent = title;
-  document.getElementById('st-sub').textContent   = sub;
+function setStatus(type,title,sub) {
+  const dot=G('st-dot');
+  const c={loading:'#3b8ef3',saving:'#3b8ef3',synced:'#2ecc71',error:'#e74c3c'};
+  dot.style.background=c[type]||'#f5a623';
+  dot.style.boxShadow=type==='synced'?'0 0 7px #2ecc71':(type==='loading'||type==='saving')?`0 0 7px ${c[type]}`:'none';
+  dot.className='st-dot'+(type==='loading'||type==='saving'?' pulsing':'');
+  G('st-title').textContent=title; G('st-sub').textContent=sub;
 }
-
-// ═══════════════════════════════════════════════════════════════
-//  CACHE
-// ═══════════════════════════════════════════════════════════════
-function readCache()    { try { const s=localStorage.getItem(CACHE_KEY); return s?JSON.parse(s):null; } catch(e){return null;} }
-function writeCache(d)  { try { localStorage.setItem(CACHE_KEY, JSON.stringify(d)); } catch(e){} }
-
-// ═══════════════════════════════════════════════════════════════
-//  UI STATE
-// ═══════════════════════════════════════════════════════════════
-function showSetup() {
-  document.getElementById('setup-screen').classList.add('show');
-  document.getElementById('client-id-input').value = clientId;
-  document.getElementById('topbar').style.display = 'none';
-  document.getElementById('bnav').style.display   = 'none';
-}
-function showApp() {
-  document.getElementById('setup-screen').classList.remove('show');
-  document.getElementById('topbar').style.display = 'block';
-  document.getElementById('bnav').style.display   = 'flex';
-  document.getElementById('page-dashboard').classList.add('show');
-  renderAll();
-}
+function readCache()   { try{const s=localStorage.getItem(CACHE_KEY);return s?JSON.parse(s):null;}catch(e){return null;} }
+function writeCache(d) { try{localStorage.setItem(CACHE_KEY,JSON.stringify(d));}catch(e){} }
+function showSetup()   { G('setup-screen').classList.add('show'); G('topbar').style.display='none'; G('bnav').style.display='none'; }
+function showApp()     { G('setup-screen').classList.remove('show'); G('topbar').style.display='block'; G('bnav').style.display='flex'; G('page-dashboard').classList.add('show'); renderAll(); }
 function showAccountInfo() {
-  if (confirm('Sign out of Google Drive?\n\nYour locally cached data will remain.')) {
-    if (window.google) google.accounts.oauth2.revoke(accessToken, ()=>{});
-    accessToken = null;
-    localStorage.removeItem(CID_KEY);
-    localStorage.removeItem(FID_KEY);
-    location.reload();
+  if (confirm('Sign out of Google Drive?\n\nCached data will remain.')) {
+    if (window.google) google.accounts.oauth2.revoke(accessToken,()=>{});
+    accessToken=null; localStorage.removeItem(CID_KEY); localStorage.removeItem(FID_KEY); location.reload();
   }
 }
 
 // ═══════════════════════════════════════════════════════════════
-//  CALCULATIONS
+//  MATH
 // ═══════════════════════════════════════════════════════════════
-const fmt   = n => '₹' + Math.round(n||0).toLocaleString('en-IN');
-const fmtD  = s => s ? new Date(s).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'}) : '—';
+const fmt   = n => '₹'+Math.round(n||0).toLocaleString('en-IN');
+const fmtD  = s => s?new Date(s).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'}):'—';
 const today = () => { const d=new Date(); d.setHours(0,0,0,0); return d; };
-const dLeft = d => Math.round((new Date(d) - today()) / 86400000);
+const dLeft = d => Math.round((new Date(d)-today())/86400000);
 const addM  = (s,m) => { const d=new Date(s); d.setMonth(d.getMonth()+m); return d.toISOString().split('T')[0]; };
-const addD  = (s,n) => { const d=new Date(s); d.setDate(d.getDate()+n);   return d.toISOString().split('T')[0]; };
+const addDy = (s,n) => { const d=new Date(s); d.setDate(d.getDate()+n);   return d.toISOString().split('T')[0]; };
 const prg   = (s,m) => { const S=new Date(s),M=new Date(m),T=new Date(); return Math.min(100,Math.max(0,Math.round((T-S)/(M-S)*100))); };
-const tenM  = (t,u) => u==='years'?t*12:u==='days'?Math.round(t/30.44):+t;
-const mDt   = (s,t,u) => u==='years'?addM(s,t*12):u==='days'?addD(s,t):addM(s,+t);
+const tenM  = (t,u) => u==='years'?+t*12:u==='days'?Math.round(+t/30.44):+t;
+const mDt   = (s,t,u) => u==='years'?addM(s,+t*12):u==='days'?addDy(s,+t):addM(s,+t);
 const fdMat = (p,r,mo,it) => { const n=mo/12,rt=r/100; if(it==='si')return p*(1+rt*n); if(it==='cq')return p*Math.pow(1+rt/4,4*n); if(it==='cm')return p*Math.pow(1+rt/12,12*n); return p*Math.pow(1+rt,n); };
-const rdMat = (m,r,mo) => { const q=r/400; let x=0; for(let i=1;i<=mo;i++) x+=m*Math.pow(1+q,(mo-i+1)/3); return x; };
-const itLbl = t => ({cq:'Cmpnd Qtrly',cm:'Cmpnd Monthly',cy:'Cmpnd Yearly',si:'Simple'}[t]||t);
+const rdMat = (m,r,mo) => { const q=r/400;let x=0;for(let i=1;i<=mo;i++)x+=m*Math.pow(1+q,(mo-i+1)/3);return x; };
+const itLbl = t=>({cq:'Cmpnd Qtrly',cm:'Cmpnd Monthly',cy:'Cmpnd Yearly',si:'Simple'}[t]||t);
 const todayStr = () => new Date().toISOString().split('T')[0];
 
 function calcFD() {
-  const p=+G('fd-p').value, r=+G('fd-r').value, t=+G('fd-t').value,
-        u=G('fd-tu').value, s=G('fd-s').value, it=G('fd-it').value;
+  const p=+G('fd-p').value,r=+G('fd-r').value,t=+G('fd-t').value,u=G('fd-tu').value,s=G('fd-s').value,it=G('fd-it').value;
   const pv=G('fd-prev');
-  if(p>0&&r>0&&t>0){ const mat=Math.round(fdMat(p,r,tenM(t,u),it));
-    G('fd-pa').textContent=fmt(mat); G('fd-pg').textContent='+'+fmt(mat-p)+' interest';
-    if(s) G('fd-pd').textContent='Matures: '+fmtD(mDt(s,t,u)); pv.style.display='flex';
-  } else pv.style.display='none';
+  if(p>0&&r>0&&t>0){const mat=Math.round(fdMat(p,r,tenM(t,u),it));
+    G('fd-pa').textContent=fmt(mat);G('fd-pg').textContent='+'+fmt(mat-p)+' interest';
+    if(s)G('fd-pd').textContent='Matures: '+fmtD(mDt(s,t,u));pv.style.display='flex';}
+  else pv.style.display='none';
 }
 function calcRD() {
-  const m=+G('rd-m').value, r=+G('rd-r').value, t=+G('rd-t').value, s=G('rd-s').value;
+  const m=+G('rd-m').value,r=+G('rd-r').value,t=+G('rd-t').value,s=G('rd-s').value;
   const pv=G('rd-prev');
-  if(m>0&&r>0&&t>0){ const mat=Math.round(rdMat(m,r,t));
-    G('rd-pa').textContent=fmt(mat); G('rd-pg').textContent='+'+fmt(mat-m*t)+' interest';
-    if(s) G('rd-pd').textContent='Matures: '+fmtD(addM(s,t)); pv.style.display='flex';
-  } else pv.style.display='none';
+  if(m>0&&r>0&&t>0){const mat=Math.round(rdMat(m,r,t));
+    G('rd-pa').textContent=fmt(mat);G('rd-pg').textContent='+'+fmt(mat-m*t)+' interest';
+    if(s)G('rd-pd').textContent='Matures: '+fmtD(addM(s,t));pv.style.display='flex';}
+  else pv.style.display='none';
 }
 
 // ═══════════════════════════════════════════════════════════════
-//  SAVE / DELETE
+//  SAVE / DELETE / MARK MATURED
 // ═══════════════════════════════════════════════════════════════
 async function saveFD() {
-  const bank=G('fd-bank').value.trim(), p=+G('fd-p').value, r=+G('fd-r').value,
-        t=+G('fd-t').value, u=G('fd-tu').value, s=G('fd-s').value, it=G('fd-it').value;
-  if(!bank)       return showToast('Enter bank name','error');
-  if(!p||p<=0)    return showToast('Enter valid principal','error');
-  if(!r||r<=0)    return showToast('Enter valid rate','error');
-  if(!t||t<=0)    return showToast('Enter valid tenure','error');
-  if(!s)          return showToast('Select start date','error');
+  const bank=G('fd-bank').value,p=+G('fd-p').value,r=+G('fd-r').value,
+        t=+G('fd-t').value,u=G('fd-tu').value,s=G('fd-s').value,it=G('fd-it').value;
+  if(!bank||bank==='') return showToast('Select a bank','error');
+  if(!p||p<=0)         return showToast('Enter valid principal','error');
+  if(!r||r<=0)         return showToast('Enter valid rate','error');
+  if(!t||t<=0)         return showToast('Enter valid tenure','error');
+  if(!s)               return showToast('Select start date','error');
   const matAmt=Math.round(fdMat(p,r,tenM(t,u),it)), matD=mDt(s,t,u);
-  appData.fds.push({ id:Date.now(), bank, accno:G('fd-accno').value.trim(), p,r,t,u,it,s,matAmt,matD, notes:G('fd-notes').value.trim() });
-  closeModal(); renderAll();
-  showToast('Saving FD to Drive...','info');
-  await saveToDrive();
-  showToast('✓ FD saved to Google Drive','success');
+  appData.fds.push({id:Date.now(),bank,accno:G('fd-accno').value.trim(),p,r,t,u,it,s,matAmt,matD,notes:G('fd-notes').value.trim(),status:'active'});
+  closeModal(); renderAll(); showToast('Saving FD to Drive...','info');
+  await saveToDrive(); showToast('✓ FD saved to Google Drive','success');
 }
 
 async function saveRD() {
-  const bank=G('rd-bank').value.trim(), m=+G('rd-m').value, r=+G('rd-r').value,
-        t=+G('rd-t').value, s=G('rd-s').value;
-  if(!bank)       return showToast('Enter bank name','error');
-  if(!m||m<=0)    return showToast('Enter valid amount','error');
-  if(!r||r<=0)    return showToast('Enter valid rate','error');
-  if(!t||t<=0)    return showToast('Enter valid tenure','error');
-  if(!s)          return showToast('Select start date','error');
+  const bank=G('rd-bank').value,m=+G('rd-m').value,r=+G('rd-r').value,t=+G('rd-t').value,s=G('rd-s').value;
+  if(!bank||bank==='') return showToast('Select a bank','error');
+  if(!m||m<=0)         return showToast('Enter valid amount','error');
+  if(!r||r<=0)         return showToast('Enter valid rate','error');
+  if(!t||t<=0)         return showToast('Enter valid tenure','error');
+  if(!s)               return showToast('Select start date','error');
   const matAmt=Math.round(rdMat(m,r,t)), matD=addM(s,t);
-  appData.rds.push({ id:Date.now(), bank, accno:G('rd-accno').value.trim(), m,r,t,s,matAmt,matD, notes:G('rd-notes').value.trim() });
-  closeModal(); renderAll();
-  showToast('Saving RD to Drive...','info');
-  await saveToDrive();
-  showToast('✓ RD saved to Google Drive','success');
+  appData.rds.push({id:Date.now(),bank,accno:G('rd-accno').value.trim(),m,r,t,s,matAmt,matD,notes:G('rd-notes').value.trim(),status:'active'});
+  closeModal(); renderAll(); showToast('Saving RD to Drive...','info');
+  await saveToDrive(); showToast('✓ RD saved to Google Drive','success');
+}
+
+async function markFD(id, status) {
+  const label = status==='matured'?'Mark as Matured?':'Re-open as Active?';
+  if(!confirm(label+'\nThis will update your Drive file.')) return;
+  appData.fds = appData.fds.map(f=>f.id===id?{...f,status}:f);
+  renderAll(); await saveToDrive();
+  showToast(status==='matured'?'FD marked as matured':'FD re-opened as active','success');
+}
+async function markRD(id, status) {
+  const label = status==='matured'?'Mark as Matured?':'Re-open as Active?';
+  if(!confirm(label+'\nThis will update your Drive file.')) return;
+  appData.rds = appData.rds.map(r=>r.id===id?{...r,status}:r);
+  renderAll(); await saveToDrive();
+  showToast(status==='matured'?'RD marked as matured':'RD re-opened as active','success');
 }
 
 async function delFD(id) {
-  if(!confirm('Delete this FD? This will update your Drive file.')) return;
-  appData.fds = appData.fds.filter(f=>f.id!==id);
-  renderAll(); await saveToDrive();
-  showToast('FD deleted','info');
+  if(!confirm('Delete this FD permanently?')) return;
+  appData.fds=appData.fds.filter(f=>f.id!==id);
+  renderAll(); await saveToDrive(); showToast('FD deleted','info');
 }
 async function delRD(id) {
-  if(!confirm('Delete this RD? This will update your Drive file.')) return;
-  appData.rds = appData.rds.filter(r=>r.id!==id);
-  renderAll(); await saveToDrive();
-  showToast('RD deleted','info');
+  if(!confirm('Delete this RD permanently?')) return;
+  appData.rds=appData.rds.filter(r=>r.id!==id);
+  renderAll(); await saveToDrive(); showToast('RD deleted','info');
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  BULK UPLOAD
+// ═══════════════════════════════════════════════════════════════
+function openBulk(type) {
+  bulkType=type; bulkParsed=[];
+  G('bulk-title').textContent = type==='fd'?'Bulk Upload FDs':'Bulk Upload RDs';
+  G('bulk-cols-hint').textContent = (type==='fd'?FD_COLS:RD_COLS).join(', ');
+  G('bulk-preview').style.display='none';
+  G('bulk-err').style.display='none';
+  G('bulk-submit-btn').style.display='none';
+  G('csv-file').value='';
+  G('bulk-modal').classList.add('open');
+}
+function closeBulkOutside(e){ if(e.target===G('bulk-modal')) closeBulk(); }
+function closeBulk(){ G('bulk-modal').classList.remove('open'); bulkParsed=[]; }
+
+function downloadSampleCSV() {
+  const cols = bulkType==='fd' ? FD_COLS : RD_COLS;
+  const sample = bulkType==='fd' ? FD_SAMPLE_ROW : RD_SAMPLE_ROW;
+  // Add valid bank names as a comment row and valid interest types note
+  const bankList = BANKS.join(' | ');
+  const itNote   = bulkType==='fd' ? '# InterestType valid values: cq (Compound Quarterly) | cm (Compound Monthly) | cy (Compound Yearly) | si (Simple Interest)' : '';
+  const bankNote = `# Valid Banks: ${bankList}`;
+  const tenureNote= bulkType==='fd' ? '# TenureUnit valid values: months | years | days' : '# TenureMonths: number of months (integer)';
+  const rows = [
+    `# FD & RD Manager - ${bulkType.toUpperCase()} Bulk Upload Template`,
+    `# Date format: YYYY-MM-DD (e.g. 2024-01-15)`,
+    tenureNote,
+    ...(bulkType==='fd'?[itNote]:[]),
+    bankNote,
+    '#',
+    cols.join(','),
+    sample.join(',')
+  ];
+  const blob=new Blob([rows.join('\n')],{type:'text/csv'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a'); a.href=url;
+  a.download=`fdrd_${bulkType}_template.csv`; a.click();
+  URL.revokeObjectURL(url);
+  showToast('Sample CSV downloaded','success');
+}
+
+function handleCSV(event) {
+  const file=event.target.files[0]; if(!file) return;
+  const reader=new FileReader();
+  reader.onload=e=>parseCSV(e.target.result);
+  reader.readAsText(file);
+}
+
+function parseCSV(text) {
+  const lines = text.split('\n').map(l=>l.trim()).filter(l=>l && !l.startsWith('#'));
+  if (lines.length < 2) { showBulkErr(['File is empty or has no data rows']); return; }
+  const header = lines[0].split(',').map(h=>h.trim());
+  const dataLines = lines.slice(1);
+  const errors=[], parsed=[];
+
+  dataLines.forEach((line,idx) => {
+    if(!line.trim()) return;
+    const vals = line.split(',').map(v=>v.trim());
+    const row  = idx+2; // 1-based line number (accounting for header)
+
+    if (bulkType==='fd') {
+      const [bank,accno,p,r,t,u,s,it,notes] = vals;
+      const errs=[];
+      if(!bank)             errs.push('Bank required');
+      if(!+p||+p<=0)        errs.push('Invalid Principal');
+      if(!+r||+r<=0)        errs.push('Invalid Rate');
+      if(!+t||+t<=0)        errs.push('Invalid Tenure');
+      if(!['months','years','days'].includes(u)) errs.push('TenureUnit must be months/years/days');
+      if(!/^\d{4}-\d{2}-\d{2}$/.test(s))        errs.push('StartDate must be YYYY-MM-DD');
+      if(!['cq','cm','cy','si'].includes(it))    errs.push('InterestType must be cq/cm/cy/si');
+      if(errs.length){ errors.push(`Row ${row}: ${errs.join(', ')}`); return; }
+      const months=tenM(+t,u), matAmt=Math.round(fdMat(+p,+r,months,it)), matD=mDt(s,+t,u);
+      parsed.push({id:Date.now()+idx,bank,accno:accno||'',p:+p,r:+r,t:+t,u,it,s,matAmt,matD,notes:notes||'',status:'active'});
+    } else {
+      const [bank,accno,m,r,t,s,notes] = vals;
+      const errs=[];
+      if(!bank)             errs.push('Bank required');
+      if(!+m||+m<=0)        errs.push('Invalid MonthlyAmount');
+      if(!+r||+r<=0)        errs.push('Invalid Rate');
+      if(!+t||+t<=0)        errs.push('Invalid TenureMonths');
+      if(!/^\d{4}-\d{2}-\d{2}$/.test(s)) errs.push('StartDate must be YYYY-MM-DD');
+      if(errs.length){ errors.push(`Row ${row}: ${errs.join(', ')}`); return; }
+      const matAmt=Math.round(rdMat(+m,+r,+t)), matD=addM(s,+t);
+      parsed.push({id:Date.now()+idx,bank,accno:accno||'',m:+m,r:+r,t:+t,s,matAmt,matD,notes:notes||'',status:'active'});
+    }
+  });
+
+  if(errors.length) { showBulkErr(errors); G('bulk-submit-btn').style.display='none'; }
+  else              { G('bulk-err').style.display='none'; }
+
+  if(parsed.length) {
+    bulkParsed=parsed;
+    const prevEl=G('bulk-preview');
+    prevEl.style.display='block';
+    G('bulk-prev-title').textContent=`✓ ${parsed.length} row${parsed.length>1?'s':''} ready to import`;
+    G('bulk-prev-rows').innerHTML = parsed.slice(0,5).map(r=>{
+      const isRD=r.m!==undefined;
+      return `<div class="bulk-preview-row">• ${r.bank} — ${isRD?fmt(r.m)+'/mo':fmt(r.p)} @ ${r.r}% → matures ${fmtD(r.matD)}</div>`;
+    }).join('') + (parsed.length>5?`<div class="bulk-preview-row" style="color:var(--txt3)">... and ${parsed.length-5} more</div>`:'');
+    if(!errors.length) G('bulk-submit-btn').style.display='block';
+  } else if(!errors.length) {
+    showBulkErr(['No valid data rows found']);
+  }
+}
+
+function showBulkErr(errs) {
+  const el=G('bulk-err'); el.style.display='block';
+  G('bulk-err-rows').innerHTML=errs.map(e=>`<div class="bulk-err-row">• ${e}</div>`).join('');
+}
+
+async function submitBulk() {
+  if(!bulkParsed.length) return;
+  if (bulkType==='fd') appData.fds=[...appData.fds,...bulkParsed];
+  else                 appData.rds=[...appData.rds,...bulkParsed];
+  closeBulk(); renderAll();
+  showToast(`Importing ${bulkParsed.length} entries...`,'info');
+  await saveToDrive();
+  showToast(`✓ ${bulkParsed.length} entries imported to Drive`,'success');
 }
 
 // ═══════════════════════════════════════════════════════════════
 //  RENDER
 // ═══════════════════════════════════════════════════════════════
 function renderDashboard() {
-  const fdP=appData.fds.reduce((s,f)=>s+f.p,0), fdM=appData.fds.reduce((s,f)=>s+f.matAmt,0);
-  const rdI=appData.rds.reduce((s,r)=>s+r.m*r.t,0), rdM=appData.rds.reduce((s,r)=>s+r.matAmt,0);
-  const rdMo=appData.rds.reduce((s,r)=>s+r.m,0);
+  // Only count ACTIVE entries in totals
+  const activeFDs = appData.fds.filter(f=>f.status!=='matured');
+  const activeRDs = appData.rds.filter(r=>r.status!=='matured');
+  const fdP=activeFDs.reduce((s,f)=>s+f.p,0), fdM=activeFDs.reduce((s,f)=>s+f.matAmt,0);
+  const rdI=activeRDs.reduce((s,r)=>s+r.m*r.t,0), rdM=activeRDs.reduce((s,r)=>s+r.matAmt,0);
+  const rdMo=activeRDs.reduce((s,r)=>s+r.m,0);
   const tI=fdP+rdI, tM=fdM+rdM;
+
   G('summary-grid').innerHTML=`
-    <div class="card gold"><div class="c-lbl">Total Invested</div><div class="c-val" style="color:var(--gold)">${fmt(tI)}</div><div class="c-sub">${appData.fds.length} FDs + ${appData.rds.length} RDs</div></div>
+    <div class="card gold"><div class="c-lbl">Active Invested</div><div class="c-val" style="color:var(--gold)">${fmt(tI)}</div><div class="c-sub">${activeFDs.length} FDs + ${activeRDs.length} RDs active</div></div>
     <div class="card"><div class="c-lbl">Maturity Value</div><div class="c-val" style="color:var(--green)">${fmt(tM)}</div><div class="c-sub">Gain: ${fmt(tM-tI)}</div></div>
-    <div class="card"><div class="c-lbl">Fixed Deposits</div><div class="c-val">${appData.fds.length}</div><div class="c-sub">${fmt(fdP)} principal</div></div>
-    <div class="card"><div class="c-lbl">Recurring Dep.</div><div class="c-val">${appData.rds.length}</div><div class="c-sub">${fmt(rdMo)} / mo</div></div>`;
+    <div class="card"><div class="c-lbl">Fixed Deposits</div><div class="c-val">${activeFDs.length}</div><div class="c-sub">${fmt(fdP)} principal</div></div>
+    <div class="card"><div class="c-lbl">Recurring Dep.</div><div class="c-val">${activeRDs.length}</div><div class="c-sub">${fmt(rdMo)} / mo</div></div>`;
 
   const all=[
-    ...appData.fds.map(f=>({type:'FD',bank:f.bank,matDate:f.matD,matAmt:f.matAmt})),
-    ...appData.rds.map(r=>({type:'RD',bank:r.bank,matDate:r.matD,matAmt:r.matAmt}))
+    ...activeFDs.map(f=>({type:'FD',bank:f.bank,matDate:f.matD,matAmt:f.matAmt})),
+    ...activeRDs.map(r=>({type:'RD',bank:r.bank,matDate:r.matD,matAmt:r.matAmt}))
   ].sort((a,b)=>new Date(a.matDate)-new Date(b.matDate)).filter(x=>dLeft(x.matDate)>=0).slice(0,6);
+
   const ul=G('upcoming-list');
   ul.innerHTML = all.length ? all.map(x=>{
     const d=dLeft(x.matDate);
@@ -714,107 +910,165 @@ function renderDashboard() {
 
 function renderFDs() {
   const el=G('fd-list');
-  if(!appData.fds.length){el.innerHTML=emptyState('🏦','No FDs yet','Tap "Add FD" to track your first Fixed Deposit');return;}
-  el.innerHTML=appData.fds.map(fd=>{
-    const d=dLeft(fd.matD), pct=prg(fd.s,fd.matD);
-    const ds=d<0?`Matured ${Math.abs(d)}d ago`:d===0?'Today!':d<30?`⚠️ ${d}d left`:`${d}d left`;
-    return entryCard({
-      typeName:'FIXED DEPOSIT', typeColor:'var(--gold)', typeBg:'var(--goldD)',
-      bank:fd.bank, accno:fd.accno, notes:fd.notes, delFn:`delFD(${fd.id})`,
-      items:[['Principal',fmt(fd.p),'var(--gold)'],['Rate',`${fd.r}%`,''],['Tenure',`${fd.t} ${fd.u}`,''],
-             ['Start',fmtD(fd.s),''],['Type',itLbl(fd.it),''],['Status',ds,d>=0&&d<30?'var(--red)':'var(--txt2)']],
-      pct, progGrad:'linear-gradient(90deg,var(--gold),var(--goldL))', progColor:'var(--gold)',
-      matDate:fmtD(fd.matD), matAmt:fmt(fd.matAmt), matGain:`+${fmt(fd.matAmt-fd.p)}`
-    });
-  }).join('');
+  const active  = appData.fds.filter(f=>f.status!=='matured');
+  const matured = appData.fds.filter(f=>f.status==='matured');
+  if(!appData.fds.length){ el.innerHTML=emptyState('🏦','No FDs yet','Tap "Add FD" or use Bulk upload to get started'); return; }
+
+  let html = active.length ? active.map(fd=>fdCard(fd,false)).join('') : '<div style="text-align:center;color:var(--txt3);font-size:12px;padding:16px 0">No active FDs</div>';
+
+  if(matured.length) {
+    html += `<div class="matured-section-hdr" onclick="toggleMatured('fd-matured-list',this)">
+      <span class="matured-section-title">Matured FDs</span>
+      <span class="matured-count">${matured.length}</span>
+      <span class="chevron" id="fd-mat-chev">▾</span>
+    </div>
+    <div id="fd-matured-list">${matured.map(fd=>fdCard(fd,true)).join('')}</div>`;
+  }
+  el.innerHTML=html;
 }
 
 function renderRDs() {
   const el=G('rd-list');
-  if(!appData.rds.length){el.innerHTML=emptyState('📅','No RDs yet','Tap "Add RD" to track your first Recurring Deposit');return;}
-  el.innerHTML=appData.rds.map(rd=>{
-    const d=dLeft(rd.matD), pct=prg(rd.s,rd.matD), inv=rd.m*rd.t;
-    const ds=d<0?`Matured ${Math.abs(d)}d ago`:d===0?'Today!':d<30?`⚠️ ${d}d left`:`${d}d left`;
-    return entryCard({
-      typeName:'RECURRING DEPOSIT', typeColor:'var(--blue)', typeBg:'var(--blueD)',
-      bank:rd.bank, accno:rd.accno, notes:rd.notes, delFn:`delRD(${rd.id})`,
-      items:[['Monthly',fmt(rd.m),'var(--blue)'],['Rate',`${rd.r}%`,''],['Tenure',`${rd.t} mo`,''],
-             ['Total Inv.',fmt(inv),'var(--gold)'],['Start',fmtD(rd.s),''],['Status',ds,d>=0&&d<30?'var(--red)':'var(--txt2)']],
-      pct, progGrad:'linear-gradient(90deg,var(--blue),#7eb3fa)', progColor:'var(--blue)',
-      matDate:fmtD(rd.matD), matAmt:fmt(rd.matAmt), matGain:`+${fmt(rd.matAmt-inv)}`
-    });
-  }).join('');
+  const active  = appData.rds.filter(r=>r.status!=='matured');
+  const matured = appData.rds.filter(r=>r.status==='matured');
+  if(!appData.rds.length){ el.innerHTML=emptyState('📅','No RDs yet','Tap "Add RD" or use Bulk upload to get started'); return; }
+
+  let html = active.length ? active.map(rd=>rdCard(rd,false)).join('') : '<div style="text-align:center;color:var(--txt3);font-size:12px;padding:16px 0">No active RDs</div>';
+
+  if(matured.length) {
+    html += `<div class="matured-section-hdr" onclick="toggleMatured('rd-matured-list',this)">
+      <span class="matured-section-title">Matured RDs</span>
+      <span class="matured-count">${matured.length}</span>
+      <span class="chevron" id="rd-mat-chev">▾</span>
+    </div>
+    <div id="rd-matured-list">${matured.map(rd=>rdCard(rd,true)).join('')}</div>`;
+  }
+  el.innerHTML=html;
 }
 
-function entryCard({typeName,typeColor,typeBg,bank,accno,notes,delFn,items,pct,progGrad,progColor,matDate,matAmt,matGain}){
-  return`<div class="entry">
+function toggleMatured(listId, hdr) {
+  const list=G(listId); if(!list) return;
+  const chev=hdr.querySelector('.chevron');
+  if(list.style.display==='none'){ list.style.display='block'; if(chev) chev.textContent='▾'; }
+  else { list.style.display='none'; if(chev) chev.textContent='▸'; }
+}
+
+function fdCard(fd, isMatured) {
+  const d=dLeft(fd.matD), pct=prg(fd.s,fd.matD);
+  const ds=d<0?`Matured ${Math.abs(d)}d ago`:d===0?'Today!':d<30?`⚠️ ${d}d left`:`${d}d left`;
+  const actionBtn = isMatured
+    ? `<button class="reopen-btn" onclick="markFD(${fd.id},'active')">Re-open</button>`
+    : `<button class="mat-btn" onclick="markFD(${fd.id},'matured')">✓ Matured</button>`;
+  return `<div class="entry${isMatured?' matured':''}">
     <div class="entry-hdr">
       <div>
-        <div class="type-badge" style="background:${typeBg};color:${typeColor}">${typeName}</div>
-        <div class="e-bank">${bank}</div>
-        ${accno?`<div class="e-meta">A/C: ${accno}</div>`:''}
-        ${notes?`<div class="e-meta" style="color:var(--txt3)">${notes}</div>`:''}
+        <span class="type-badge" style="background:var(--goldD);color:var(--gold)">FIXED DEPOSIT</span>
+        ${isMatured?'<span class="matured-badge">MATURED</span>':''}
+        <div class="e-bank">${fd.bank}</div>
+        ${fd.accno?`<div class="e-meta">A/C: ${fd.accno}</div>`:''}
+        ${fd.notes?`<div class="e-meta" style="color:var(--txt3)">${fd.notes}</div>`:''}
       </div>
-      <button class="del-btn" onclick="${delFn}">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2.5" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg>
-      </button>
+      <div class="entry-actions">
+        ${actionBtn}
+        <button class="del-btn" onclick="delFD(${fd.id})">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2.5" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg>
+        </button>
+      </div>
     </div>
     <div class="divider"></div>
-    <div class="e-grid">${items.map(([l,v,c])=>`<div><div class="eg-lbl">${l}</div><div class="eg-val" style="color:${c||'var(--txt)'}">${v}</div></div>`).join('')}</div>
-    <div class="prog-wrap">
-      <div class="prog-top"><span class="prog-lbl">Progress</span><span class="prog-pct" style="color:${progColor}">${pct}%</span></div>
-      <div class="pbar"><div class="pfill" style="width:${pct}%;background:${progGrad}"></div></div>
+    <div class="e-grid">
+      <div><div class="eg-lbl">Principal</div><div class="eg-val" style="color:var(--gold)">${fmt(fd.p)}</div></div>
+      <div><div class="eg-lbl">Rate</div><div class="eg-val">${fd.r}%</div></div>
+      <div><div class="eg-lbl">Tenure</div><div class="eg-val">${fd.t} ${fd.u}</div></div>
+      <div><div class="eg-lbl">Start</div><div class="eg-val" style="font-size:10px">${fmtD(fd.s)}</div></div>
+      <div><div class="eg-lbl">Type</div><div class="eg-val" style="font-size:10px">${itLbl(fd.it)}</div></div>
+      <div><div class="eg-lbl">Status</div><div class="eg-val" style="font-size:10px;color:${isMatured?'var(--purple)':d>=0&&d<30?'var(--red)':'var(--txt2)'}">${isMatured?'Matured':ds}</div></div>
     </div>
-    <div class="e-foot">
-      <div><div style="font-size:10px;color:var(--txt2);font-weight:600">Maturity</div><div style="font-size:10px;color:var(--txt2);margin-top:1px">${matDate}</div></div>
-      <div style="text-align:right"><div style="font-size:15px;font-weight:800;color:var(--green)">${matAmt}</div><div style="font-size:10px;color:#27ae60">${matGain}</div></div>
+    <div class="prog-wrap">
+      <div class="prog-top"><span class="prog-lbl">Progress</span><span class="prog-pct" style="color:${isMatured?'var(--purple)':'var(--gold)'}">${pct}%</span></div>
+      <div class="pbar"><div class="pfill" style="width:${pct}%;background:${isMatured?'var(--purple)':'linear-gradient(90deg,var(--gold),var(--goldL))'}"></div></div>
+    </div>
+    <div class="e-foot${isMatured?' matured-foot':''}">
+      <div><div style="font-size:10px;color:var(--txt2);font-weight:600">Maturity Date</div><div style="font-size:10px;color:var(--txt2);margin-top:1px">${fmtD(fd.matD)}</div></div>
+      <div style="text-align:right"><div style="font-size:15px;font-weight:800;color:${isMatured?'var(--purple)':'var(--green)'}">${fmt(fd.matAmt)}</div><div style="font-size:10px;color:${isMatured?'var(--purple)':'#27ae60'}">+${fmt(fd.matAmt-fd.p)}</div></div>
     </div>
   </div>`;
 }
 
-function emptyState(ico,h,p){return`<div class="empty"><div class="empty-ico">${ico}</div><div class="empty-h">${h}</div><div class="empty-p">${p}</div></div>`;}
+function rdCard(rd, isMatured) {
+  const d=dLeft(rd.matD), pct=prg(rd.s,rd.matD), inv=rd.m*rd.t;
+  const ds=d<0?`Matured ${Math.abs(d)}d ago`:d===0?'Today!':d<30?`⚠️ ${d}d left`:`${d}d left`;
+  const actionBtn = isMatured
+    ? `<button class="reopen-btn" onclick="markRD(${rd.id},'active')">Re-open</button>`
+    : `<button class="mat-btn" onclick="markRD(${rd.id},'matured')">✓ Matured</button>`;
+  return `<div class="entry${isMatured?' matured':''}">
+    <div class="entry-hdr">
+      <div>
+        <span class="type-badge" style="background:var(--blueD);color:var(--blue)">RECURRING DEPOSIT</span>
+        ${isMatured?'<span class="matured-badge">MATURED</span>':''}
+        <div class="e-bank">${rd.bank}</div>
+        ${rd.accno?`<div class="e-meta">A/C: ${rd.accno}</div>`:''}
+        ${rd.notes?`<div class="e-meta" style="color:var(--txt3)">${rd.notes}</div>`:''}
+      </div>
+      <div class="entry-actions">
+        ${actionBtn}
+        <button class="del-btn" onclick="delRD(${rd.id})">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2.5" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg>
+        </button>
+      </div>
+    </div>
+    <div class="divider"></div>
+    <div class="e-grid">
+      <div><div class="eg-lbl">Monthly</div><div class="eg-val" style="color:var(--blue)">${fmt(rd.m)}</div></div>
+      <div><div class="eg-lbl">Rate</div><div class="eg-val">${rd.r}%</div></div>
+      <div><div class="eg-lbl">Tenure</div><div class="eg-val">${rd.t} mo</div></div>
+      <div><div class="eg-lbl">Total Inv.</div><div class="eg-val" style="color:var(--gold);font-size:11px">${fmt(inv)}</div></div>
+      <div><div class="eg-lbl">Start</div><div class="eg-val" style="font-size:10px">${fmtD(rd.s)}</div></div>
+      <div><div class="eg-lbl">Status</div><div class="eg-val" style="font-size:10px;color:${isMatured?'var(--purple)':d>=0&&d<30?'var(--red)':'var(--txt2)'}">${isMatured?'Matured':ds}</div></div>
+    </div>
+    <div class="prog-wrap">
+      <div class="prog-top"><span class="prog-lbl">Progress</span><span class="prog-pct" style="color:${isMatured?'var(--purple)':'var(--blue)'}">${pct}%</span></div>
+      <div class="pbar"><div class="pfill" style="width:${pct}%;background:${isMatured?'var(--purple)':'linear-gradient(90deg,var(--blue),#7eb3fa)'}"></div></div>
+    </div>
+    <div class="e-foot${isMatured?' matured-foot':''}">
+      <div><div style="font-size:10px;color:var(--txt2);font-weight:600">Maturity Date</div><div style="font-size:10px;color:var(--txt2);margin-top:1px">${fmtD(rd.matD)}</div></div>
+      <div style="text-align:right"><div style="font-size:15px;font-weight:800;color:${isMatured?'var(--purple)':'var(--green)'}">${fmt(rd.matAmt)}</div><div style="font-size:10px;color:${isMatured?'var(--purple)':'#27ae60'}">+${fmt(rd.matAmt-inv)}</div></div>
+    </div>
+  </div>`;
+}
 
+function emptyState(ico,h,p){ return`<div class="empty"><div class="empty-ico">${ico}</div><div class="empty-h">${h}</div><div class="empty-p">${p}</div></div>`; }
 function renderAll(){ renderDashboard(); renderFDs(); renderRDs(); }
 
 // ═══════════════════════════════════════════════════════════════
 //  NAVIGATION / MODAL
 // ═══════════════════════════════════════════════════════════════
-function showPage(name, el) {
+function showPage(name,el) {
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('show'));
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('on'));
   G('page-'+name).classList.add('show'); el.classList.add('on');
 }
 function openModal(type) {
-  G('mfd').style.display = type==='fd'?'block':'none';
-  G('mrd').style.display = type==='rd'?'block':'none';
+  G('mfd').style.display=type==='fd'?'block':'none';
+  G('mrd').style.display=type==='rd'?'block':'none';
   G('modal').classList.add('open');
   const t=todayStr();
-  if(type==='fd'){ G('fd-s').value=t; G('fd-prev').style.display='none'; }
-  if(type==='rd'){ G('rd-s').value=t; G('rd-prev').style.display='none'; }
+  if(type==='fd'){G('fd-s').value=t;G('fd-prev').style.display='none';G('fd-bank').value='';}
+  if(type==='rd'){G('rd-s').value=t;G('rd-prev').style.display='none';G('rd-bank').value='';}
 }
-function closeModal() {
-  G('modal').classList.remove('open');
-  ['fd-bank','fd-accno','fd-p','fd-r','fd-t','fd-notes','rd-bank','rd-accno','rd-m','rd-r','rd-t','rd-notes']
-    .forEach(id=>{ const e=G(id); if(e) e.value=''; });
-  G('fd-tu').value='months'; G('fd-it').value='cq';
-}
+function closeModal(){ G('modal').classList.remove('open'); }
 function closeModalOutside(e){ if(e.target===G('modal')) closeModal(); }
 
-// ═══════════════════════════════════════════════════════════════
-//  TOAST
-// ═══════════════════════════════════════════════════════════════
+// ── TOAST ─────────────────────────────────────────────────────
 let _tt;
-function showToast(msg, type='info') {
-  const t=G('toast');
-  t.textContent=msg;
-  t.style.background = type==='success'?'#1a3a28':type==='error'?'#3a1a1a':'#243550';
-  t.style.color      = type==='success'?'var(--green)':type==='error'?'var(--red)':'var(--txt)';
-  t.style.border     = `1px solid ${type==='success'?'rgba(46,204,113,.3)':type==='error'?'rgba(231,76,60,.3)':'rgba(255,255,255,.1)'}`;
-  t.classList.add('show');
-  clearTimeout(_tt); _tt=setTimeout(()=>t.classList.remove('show'), 2600);
+function showToast(msg,type='info') {
+  const t=G('toast'); t.textContent=msg;
+  t.style.background=type==='success'?'#1a3a28':type==='error'?'#3a1a1a':'#243550';
+  t.style.color=type==='success'?'var(--green)':type==='error'?'var(--red)':'var(--txt)';
+  t.style.border=`1px solid ${type==='success'?'rgba(46,204,113,.3)':type==='error'?'rgba(231,76,60,.3)':'rgba(255,255,255,.1)'}`;
+  t.classList.add('show'); clearTimeout(_tt); _tt=setTimeout(()=>t.classList.remove('show'),2800);
 }
 
-// ── Util ──
 function G(id){ return document.getElementById(id); }
 </script>
 </body>
