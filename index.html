@@ -569,7 +569,11 @@ async function driveRequest(url, opts={}) {
   if (res.status===401) { requestToken(true); throw new Error('Token expired'); }
   if (!res.ok) { const e=await res.json().catch(()=>({})); throw new Error(e.error?.message||`HTTP ${res.status}`); }
   const ct = res.headers.get('Content-Type')||'';
-  return ct.includes('application/json') ? res.json() : res.text();
+  if (url.includes('alt=media')) {
+  return res.text();
+}
+
+return ct.includes('application/json') ? res.json() : res.text();
 }
 
 async function findFile() {
@@ -585,7 +589,17 @@ async function findFile() {
 
 async function readDriveFile(fid) {
   const t = await driveRequest(`${DRIVE_API}/${fid}?alt=media`);
-  if (!t||!t.trim()) return { fds:[], rds:[] };
+
+  // If already parsed JSON object
+  if (typeof t === 'object' && t !== null) {
+    return t;
+  }
+
+  // If string response
+  if (!t || typeof t !== 'string' || !t.trim()) {
+    return { fds: [], rds: [] };
+  }
+
   return JSON.parse(t);
 }
 
